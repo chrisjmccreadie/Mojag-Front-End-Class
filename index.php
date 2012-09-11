@@ -22,7 +22,9 @@
     <section id="contentcontainer"> <!-- HTML5 section tag for the content 'section' -->
     	<section id="intro">
     		<h1>PHP Demos</h1>
-    		<a href='demo/php/helloWorld/index.php' target="_blank">1) Hello World</a>
+    		<a href='demo/php/helloWorld/index.php' target="_blank">1) Hello World</a><br>
+    		<a href='demo/php/getMenu/index.php' target="_blank">2) Get Menu</a>
+
     	</section>
     	<footer> <!-- HTML5 footer tag -->
     	
