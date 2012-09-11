@@ -23,7 +23,8 @@
     	<section id="intro">
     		<h1>PHP Demos</h1>
     		<a href='demo/php/helloWorld/index.php' target="_blank">1) Hello World</a><br>
-    		<a href='demo/php/getMenu/index.php' target="_blank">2) Get Menu</a>
+    		<a href='demo/php/getMenu/index.php' target="_blank">2) Get Menu</a></br>
+    		<a href='demo/php/sitemap/index.php' target="_blank">3) Get Sitemap</a>
 
     	</section>
     	<footer> <!-- HTML5 footer tag -->

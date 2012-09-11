@@ -84,6 +84,35 @@ class mojagClass
 	 */
 	 
 	 
+	 function getSitemap($siteid,$format=1)
+	 {
+	 	$url = "sitemap?siteid=$siteid";
+		$sitemap = $this->fetchPage($url);
+		//print_r($sitemap);		
+	 	
+	 	
+	 	//deal with the sitemap
+	 	//we will format it or return it as an array.
+	 	if ($format == 1)
+		{
+			$sm = "<ul>";
+			foreach ($sitemap as $site)
+			{
+				if ($site->url == '')
+					$u = '#';
+				else {
+					$u = $site->url;
+				}
+				$sm=$sm."<li><a href='$u'>$site->name</a></li>";
+			}
+			$sm = $sm."</ul>";
+			return($sm);
+		}
+		else {
+			return($data);
+		}
+	 }
+	 
 	 function getMenu($siteid,$class='navigation',$active='',$target='_self')
 	 {
 		//get the menu using the site id
