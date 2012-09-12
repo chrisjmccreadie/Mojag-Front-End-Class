@@ -40,6 +40,8 @@ class mojagClass
 		//exit;
 	}
 	
+
+	
 	//this function fetches the page.
 	function fetchPage($url)
 	{
@@ -52,9 +54,12 @@ class mojagClass
 		$opts = array('http'=>array('header' => "User-Agent:MyAgent/1.0\r\n"));
 		$context = stream_context_create($opts);
 		$str = file_get_contents($url,false,$context);
-		//echo "str".$str;
+	//	echo "str".$str;
+		//exit;
 		//decode the json
 		$data = json_decode($str);
+		//print_r($data);
+		//exit;
 		return($data);
 		//print_r($data);
 	}
@@ -82,6 +87,25 @@ class mojagClass
 	/*
 	 * END OF GENERIC FUNCTIONS
 	 */
+	 
+	 
+	 function fecthSeo($pageid)
+	 {
+		$url = "seoData?id=$pageid";
+		$seo = $this->fetchPage($url);
+			//exit;
+		return($seo);
+		
+	 }
+	 
+	 function getKeyword($siteid,$keywords)
+	 {
+		//This function get the objects which match the keywords.
+		
+		$url = "meta/?id=$siteid&keywords=$keywords";
+		$meta = $this->fetchPage($url);
+		return($data);
+	 }
 	 
 	 
 	 function getSitemap($siteid,$format=1)
