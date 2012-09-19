@@ -15,8 +15,11 @@ $siteid = 16;
 $match = "home.php";
 //target set what you want the link to do (can be left blank and defaults to self)
 $target = "_blank";
+//add a class
+$class = "dropdown-menu";
 //fetch the content
-$menu = $mojag->getMenu($siteid,'',$match,$target);
+$menu = $mojag->getMenu($siteid,$class,$match,$target);
+
 //debug
 //print_r($menu);
 ?>

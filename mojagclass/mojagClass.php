@@ -213,6 +213,17 @@ class mojagClass
 		}
 		return($datafin);
 	}
+	
+	//this function gets the pageid
+	function getPage($pageid)
+	{
+		$url = "page/?id=$pageid";
+		$page = $this->fetchPage($url);
+		//echo 'meta';
+		//print_r($meta);
+		//echo 'end';
+		return($page);
+	}
 }
 	
 ?>

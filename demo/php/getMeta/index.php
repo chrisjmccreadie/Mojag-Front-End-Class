@@ -14,7 +14,7 @@ $siteid = 16;
 //set the keyword that you want to search on.
 $keywords = "Home";
 //fetch the content
-$menu = $mojag->getKeyword($siteid,$keywords);
+$data = $mojag->getKeyword($siteid,$keywords);
 //debug
 //print_r($menu);
 ?>
@@ -23,7 +23,7 @@ $menu = $mojag->getKeyword($siteid,$keywords);
 <body>
 <?php
 	//this is the menu
-	echo $menu;
+	echo $data;
 ?>
 </body>
 </html>
