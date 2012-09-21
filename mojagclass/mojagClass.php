@@ -211,6 +211,8 @@ class mojagClass
 			$datafin[] = array('key' => $key,'value' =>$value);
 			}
 		}
+				$datafin['user'] = $data[0]->user;
+		
 		return($datafin);
 	}
 	
