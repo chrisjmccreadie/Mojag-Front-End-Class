@@ -13,7 +13,8 @@
  * 
  */
 class Mojagclass
-var $url='';
+{
+	var $url='';
 	var $useurl='http://www.mojag.co/index.php/rest/rest/';
 	//var $useurl='http://localhost:8888/mojag/index.php/rest/rest/';
 	
@@ -21,24 +22,30 @@ var $url='';
 	 *attribute stripping start
 	 */
 	 
-	 function getAttributes($type,$object)
+ function getAttributes($type,$object)
 	 {
 	 	if ($type == 'image')
 		{
-			$tmp = explode('src="',$object);
-			$fin = str_replace('">','',$tmp[1]);
-			$attr = array("src"=>$fin);
-			return($attr);
-		}
+			
+			$doc = new DOMDocument();
+    		$doc->loadHTML($object);
+    		$imageTags = $doc->getElementsByTagName('img');
+
+    		foreach($imageTags as $tag) {
+        		//return($tag->getAttribute('src'));
+    			$pic[]=array("src"=>$tag->getAttribute('src'));
+			}
+			return($pic);
+			}
 		if ($type == 'href')
 		{
 			$tmp = explode('href="',$object);
-			$tmp = explode('">',$tmp[1]);
-
-			return($tmp[0]);
+			$tmp2 = explode('">',$tmp[1]);
+			return($tmp2[0]);
 			
 		}
 	 }
+	 
 	 
 	
 	/*
