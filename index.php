@@ -24,10 +24,13 @@
     		<h1>PHP Demos</h1>
     		<a href='demo/php/helloWorld/index.php' target="_blank">1) Hello World</a><br>
     		<a href='demo/php/getMenu/index.php' target="_blank">2) Get Menu</a></br>
-    		<a href='demo/php/sitemap/index.php' target="_blank">3) Get Sitemap</a></br>
-      		<a href='demo/php/getMeta/index.php' target="_blank">4) Get Keywords</a></br>
-        		<a href='demo/php/getSeo/index.php' target="_blank">5) Get SEO</a></br>
-		        		<a href='demo/php/getMeta/index.php' target="_blank">5) Get Meta</a></br>
+    		<a href='demo/php/getRawMenu/index.php' target="_blank">3) Get Raw Menu</a></br>
+
+    		<a href='demo/php/sitemap/index.php' target="_blank">4) Get Sitemap</a></br>
+      		<a href='demo/php/getMeta/index.php' target="_blank">5) Get Keywords</a></br>
+        	<a href='demo/php/getSeo/index.php' target="_blank">6) Get SEO</a></br>
+		    <a href='demo/php/getMeta/index.php' target="_blank">7) Get Meta</a></br>
+		    <a href='demo/php/imageAttributes/index.php' target="_blank">8) Get Image Attributes</a></br>
 
 
     	</section>

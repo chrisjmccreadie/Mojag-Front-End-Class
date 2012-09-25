@@ -12,7 +12,7 @@
  * create a super duper mutexed version with all the trimmings, we would love to invclude it,
  * 
  */
-class mojagClass
+class Mojagclass
 {
 	var $url='';
 	var $useurl='http://www.mojag.co/index.php/rest/rest/';
@@ -21,6 +21,11 @@ class mojagClass
 	/*
 	 *attribute stripping start
 	 */
+	 
+	 function works()
+	 {
+	 	echo "woot";
+	 }
 	 
 	 function getAttributes($type,$object)
 	 {
@@ -130,7 +135,7 @@ class mojagClass
 		
 		$url = "meta/?id=$siteid&keywords=$keywords";
 		$meta = $this->fetchPage($url);
-		return($meta);
+		return($data);
 	 }
 	 
 	 
