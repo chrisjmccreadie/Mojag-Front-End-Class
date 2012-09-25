@@ -4,7 +4,7 @@
  * Copyright : no one, use it and enjoy it.
  * author : Chris McCreadie
  * date added : 10/09/2012
- * date updated : 10/09/2012
+ * date updated : 24/09/2012
  * 
  * This class handles all the calls to the Mojag REST API and very nice it is too.
  * 
@@ -74,16 +74,24 @@ class mojagClass
 		//define the page to call here
 		$url = $this->useurl.$url;
 		//debug information
-		//echo $url;
+//		echo $url;
 		//exit;
 		//get the contents, this would be better in CURL but its not on 100% of all servers.
 		$opts = array('http'=>array('header' => "User-Agent:MyAgent/1.0\r\n"));
 		$context = stream_context_create($opts);
 		$str = file_get_contents($url,false,$context);
-	//	echo "str".$str;
+	
+		//echo "str".$str;
 		//exit;
 		//decode the json
-		$data = json_decode($str);
+		if ($str != '"Page has not been published"')
+		{
+						$data = json_decode($str);
+			
+		}
+		else {
+			$data = 0;
+		}
 		//print_r($data);
 		//exit;
 		return($data);
@@ -120,8 +128,12 @@ class mojagClass
 		$url = "seoData?id=$pageid";
 		$seo = $this->fetchPage($url);
 			//exit;
-		return($seo);
-		
+		if ($seo != 0)
+			return($seo);
+		else {
+			return( array("error"=>'Page has not been published'));
+			
+		}
 	 }
 	 
 	 function getKeyword($siteid,$keywords)
@@ -130,7 +142,16 @@ class mojagClass
 		
 		$url = "meta/?id=$siteid&keywords=$keywords";
 		$meta = $this->fetchPage($url);
-		return($meta);
+		if ($meta != 0)
+		{
+			return($meta);
+			
+		}
+		else
+		{
+			return( array("error"=>'Page has not been published'));
+			
+		}
 	 }
 	 
 	 
@@ -140,34 +161,47 @@ class mojagClass
 		$sitemap = $this->fetchPage($url);
 		//print_r($sitemap);		
 	 	
-	 	
-	 	//deal with the sitemap
-	 	//we will format it or return it as an array.
-	 	if ($format == 1)
+	 	if ($sitemap != 0)
 		{
-			$sm = "<ul>";
-			foreach ($sitemap as $site)
+			//deal with the sitemap
+	 		//we will format it or return it as an array.
+	 		if ($format == 1)
 			{
-				if ($site->url == '')
-					$u = '#';
-				else {
-					$u = $site->url;
+				$sm = "<ul>";
+				foreach ($sitemap as $site)
+				{
+					if ($site->url == '')
+						$u = '#';
+					else {
+						$u = $site->url;
+					}
+					$sm=$sm."<li><a href='$u'>$site->name</a></li>";
 				}
-				$sm=$sm."<li><a href='$u'>$site->name</a></li>";
+				$sm = $sm."</ul>";
+				return($sm);
 			}
-			$sm = $sm."</ul>";
-			return($sm);
+			else {
+				return($data);
+			}
 		}
-		else {
-			return($data);
+		else
+		{
+			return( array("error"=>'Page has not been published'));
+			
 		}
+	 	
 	 }
 	 
 	 function getRawMenu($siteid)
 	 {
 		$url = "menu/?id=$siteid";
 		$menu = $this->fetchPage($url);
-		return $menu;	 	
+		if ($menu != 0)
+			return $menu;	 	
+		else {
+			return( array("error"=>'Page has not been published'));
+			
+		}
 	 }
 	 
 	 function getMenu($siteid,$class='navigation',$active='',$target='_self')
@@ -177,16 +211,18 @@ class mojagClass
 		
 		$url = "menu/?id=$siteid";
 		$menu = $this->fetchPage($url);
-		//echo 'data'.print_r($data);
-		//echo $data;
-		//exit;
-		//check it is not a protected domain and if it is return false
-		//to do the above.
-		$menuo ="<ul class=\"$class\">";
-		
-		
-		if ($active == '')
+		if ($menu != 0)
 		{
+			//echo 'data'.print_r($data);
+			//echo $data;
+			//exit;
+			//check it is not a protected domain and if it is return false
+			//to do the above.
+			$menuo ="<ul class=\"$class\">";
+		
+		
+			if ($active == '')
+			{
 				//get the name of the page (can update to use the getname function) and if its blank set it to index.php
 				$sr = explode("/",$_SERVER['REQUEST_URI']);
 				$name = $sr[count($sr)-1];
@@ -195,25 +231,33 @@ class mojagClass
 				{
 					$name = 'index.php';
 				}			
-		}
-		else {
-			$name = $active;
-		}
+			}
+			else {
+				$name = $active;
+			}
 
-		//loop through and build the menu
-		foreach ($menu as $item)
-		{
-			if ($name == $item->url)
+			//loop through and build the menu
+			foreach ($menu as $item)
 			{
-				$menuo = $menuo."<li><a href=\"$item->url\" target=\"$target\" class=\"sel\">$item->outputname</a></li>";
+				if ($name == $item->url)
+				{
+					$menuo = $menuo."<li><a href=\"$item->url\" target=\"$target\" class=\"sel\">$item->outputname</a></li>";
 			
+				}
+				else	
+				{
+					$menuo = $menuo."<li><a href=\"$item->url\" target=\"$target\" id=\"\">$item->outputname</a></li>";
+				}
 			}
-			else	
-			{
-				$menuo = $menuo."<li><a href=\"$item->url\" target=\"$target\" id=\"\">$item->outputname</a></li>";
-			}
+			$menuo = $menuo."</ul>";			
 		}
-		$menuo = $menuo."</ul>";
+		else
+		{
+			return( array("error"=>'Page has not been published'));
+			
+		}
+		
+		
 		return($menuo);
 	 }
 	
@@ -236,15 +280,22 @@ class mojagClass
 		
 		$url = "pageoutputname?id=$siteid&on=$url3";
 		$data = $this->fetchPage($url);
-		
-		//return the  data
-		$data2 = $data[0]->pagedata;
-		foreach($data2 as $index=>$val){    
-		foreach($data2[$index] as $key => $value) {
-			$datafin[] = array('key' => $key,'value' =>$value);
+		if ($data != 0)
+		{
+					//return the  data
+			$data2 = $data[0]->pagedata;
+				foreach($data2 as $index=>$val){    
+					foreach($data2[$index] as $key => $value) {
+						$datafin[] = array('key' => $key,'value' =>$value);
+				}
 			}
-		}
 				$datafin['user'] = $data[0]->user;
+			
+		}
+		else
+		{
+			$datafin = array("error"=>'Page has not been published');
+		}
 		
 		return($datafin);
 	}
@@ -257,7 +308,14 @@ class mojagClass
 		//echo 'meta';
 		//print_r($meta);
 		//echo 'end';
-		return($page);
+		if ($page != 0)
+		{
+			return($page);
+		}
+		else
+		{
+			return( array("error"=>'Page has not been published'));
+		}
 	}
 }
 	

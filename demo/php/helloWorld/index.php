@@ -19,6 +19,7 @@ $urlsegementname="home";
 $pagecontent = $mojag->getContentObjectByOutputname($siteid,$urlsegement,$urlsegementname);
 //debug
 //print_r($pagecontent);
+//check fro a content error here and process if you find.
 ?>
 <!DOCTYPE HTML>
 <html>
