@@ -31,6 +31,7 @@
         	<a href='demo/php/getSeo/index.php' target="_blank">6) Get SEO</a></br>
 		    <a href='demo/php/getMeta/index.php' target="_blank">7) Get Meta</a></br>
 		    <a href='demo/php/imageAttributes/index.php' target="_blank">8) Get Image Attributes</a></br>
+		    <a href='demo/php/getSite/index.php' target="_blank">9) Get Site</a></br>
 
 
     	</section>

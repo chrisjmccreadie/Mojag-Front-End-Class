@@ -323,6 +323,25 @@ class Mojagclass
 			return( array("error"=>'Page has not been published'));
 		}
 	}
+	
+	
+	//this function gets the pageid
+	function getSite($siteid)
+	{
+		$url = "site/?id=$siteid";
+		$site = $this->fetchPage($url);
+		//echo 'meta';
+		//print_r($meta);
+		//echo 'end';
+		if ($site != 0)
+		{
+			return($site);
+		}
+		else
+		{
+			return( array("error"=>'Site information not found'));
+		}
+	}
 }
 	
 ?>

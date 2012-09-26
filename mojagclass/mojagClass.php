@@ -4,7 +4,7 @@
  * Copyright : no one, use it and enjoy it.
  * author : Chris McCreadie
  * date added : 10/09/2012
- * date updated : 24/09/2012
+ * date updated : 26/09/2012
  * 
  * This class handles all the calls to the Mojag REST API and very nice it is too.
  * 
@@ -80,7 +80,7 @@ class mojagClass
 		//define the page to call here
 		$url = $this->useurl.$url;
 		//debug information
-//		echo $url;
+		//echo $url;
 		//exit;
 		//get the contents, this would be better in CURL but its not on 100% of all servers.
 		$opts = array('http'=>array('header' => "User-Agent:MyAgent/1.0\r\n"));
@@ -321,6 +321,24 @@ class mojagClass
 		else
 		{
 			return( array("error"=>'Page has not been published'));
+		}
+	}
+	
+	//this function gets the site
+	function getSite($siteid)
+	{
+		$url = "site/?id=$siteid";
+		$site = $this->fetchPage($url);
+		//echo 'meta';
+		//print_r($meta);
+		//echo 'end';
+		if ($site != 0)
+		{
+			return($site);
+		}
+		else
+		{
+			return( array("error"=>'Site information not found'));
 		}
 	}
 }
