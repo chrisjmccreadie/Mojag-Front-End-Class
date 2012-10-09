@@ -8,6 +8,7 @@ class totemCache
 	var $siteid = '121';
 	var $cachefile = "totemcms/cache/";
 	var $pagename = '';
+	var $useurl= array("url" =>'http://www.mojag.co/index.php/rest/rest/');
 	
 
 	public function forceCache()
@@ -18,6 +19,27 @@ class totemCache
 		*/
 		ob_start();
 		return ('started');
+	}
+	
+	
+	private function checkServerLive()
+	{
+		/*
+		 * This function checks that the server is live.  This is an array of server to check which one is alive.
+		 */
+		$urls = array("url" => "http://www.totemcms.co/index.php/cms/cms/checkliveserver/","url" => "http://totemws.phpfogapp.com/index.php/cms/cms/checkliveserver/");
+		foreach ($urls as $url)
+		{
+			//print_r($url);
+			$opts = array('http'=>array('header' => "User-Agent:MyAgent/1.0\r\n"));
+			$context = stream_context_create($opts);
+			$str = file_get_contents($url,false,$context);
+			if ($str == "true")
+				return($str);
+		}
+		return('false');		
+				//print_r($urls);
+		
 	}
 
 	public function cacheEnd()
