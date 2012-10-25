@@ -57,16 +57,23 @@ class mojagClass
 	
 
 	
+
 	//this function fetches the page.
 	function fetchPage($url)
 	{
+		//if its a heartbeast set the timeout to one second
+		if ($url == "ping/")
+			$opts = array(  'http' => array( 'timeout' => 1   ) ) ;
+		else
+	 		$opts = array('http'=>array('header' => "User-Agent:MyAgent/1.0\r\n"));
+		
 		//define the page to call here
 		$url = $this->useurl.$url;
 		//debug information
 		//echo $url.'</br>';
 		//exit;
 		//get the contents, this would be better in CURL but its not on 100% of all servers.
-		$opts = array('http'=>array('header' => "User-Agent:MyAgent/1.0\r\n"));
+		
 		$context = stream_context_create($opts);
 		$str = file_get_contents($url,false,$context);
 	//	echo "str".$str;
