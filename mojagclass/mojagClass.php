@@ -28,6 +28,36 @@ class mojagClass
 		//$this->workingurl();
     }
 	
+	
+	 function getAttributes($type,$object)
+	 {
+	 	//echo $object;
+	 
+	 	if ($type == 'image')
+		{
+			
+			$doc = new DOMDocument();
+    		$doc->loadHTML($object);
+    		$imageTags = $doc->getElementsByTagName('img');
+
+    		foreach($imageTags as $tag) {
+        		//return($tag->getAttribute('src'));
+    			$pic[]=array("src"=>$tag->getAttribute('src'));
+			}
+			
+			//print_r($pic);
+			//exit;
+			return($pic);
+			}
+		if ($type == 'href')
+		{
+			$tmp = explode('href="',$object);
+			$tmp2 = explode('">',$tmp[1]);
+			return($tmp2[0]);
+			
+		}
+	 }
+	
 	/*
 	 * GENERIC FUNCTION
 	 */
