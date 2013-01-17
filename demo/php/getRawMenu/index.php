@@ -22,7 +22,7 @@ $menu = $mojag->getRawMenu($siteid);
 <body>
 <?php
 	//this is the menu
-echo $menu;
+print_r($menu);
 ?>
 </body>
 </html>

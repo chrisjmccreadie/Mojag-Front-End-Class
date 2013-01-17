@@ -237,6 +237,14 @@ class mojagClass
 		}
 	 }
 	 
+	 
+	 function getRawMenu($siteid)
+	 {
+		$url = "menu/?id=$siteid";
+		$menu = $this->fetchPage($url);
+		return $menu;	 	
+	 }
+	 
 	 function getMenu($siteid,$class='navigation',$active='',$target='_self')
 	 {
 		//get the menu using the site id
