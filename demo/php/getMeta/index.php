@@ -10,20 +10,20 @@ else
 	echo 'class does not exist';
 }
 //set your site id
-$siteid = 16;
+$siteid = 15;
 //set the keyword that you want to search on.
-$keywords = "Home";
+$keywords = "Blog";
 //fetch the content
 $data = $mojag->getKeyword($siteid,$keywords);
 //debug
-//print_r($menu);
+//print_r($data);
 ?>
 <!DOCTYPE HTML>
 <html>
 <body>
 <?php
 	//this is the menu
-	echo $data;
+	print_r($data);
 ?>
 </body>
 </html>
