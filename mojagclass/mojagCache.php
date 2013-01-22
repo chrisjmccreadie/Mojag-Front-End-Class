@@ -27,7 +27,9 @@ class mojagCache {
 
     function __construct($dir)
     {
-        $this->dir = $dir;
+        $this->dir = $_SERVER['DOCUMENT_ROOT'].'mojagclass/cache';
+		print_r($this->dir);
+		exit;
     }
 	
 	private function checkServerLive()

@@ -29,6 +29,16 @@ class mojagClass
     }
 	
 	
+	function version()
+	{
+		echo $this->version;
+	}
+	
+	function update()
+	{
+		//check to see which version we are using.
+	}
+	
 	 function getAttributes($type,$object)
 	 {
 	 	//echo $object;
