@@ -217,6 +217,17 @@ class mojagClass
 		return($meta);
 	 }
 	 
+	 function getArchiveMeta($id,$keywords)
+	 {
+	 	//update function to work with more than one keyword.
+		//	/index.php/rest/rest/archivepages?id=15
+		$url = "archivepages/?id=$id=$keywords";
+		$meta = $this->fetchPage($url);
+		return($meta);		
+	 }
+	
+	 
+	 
 	 
 	 function getSitemap($siteid,$format=1)
 	 {
