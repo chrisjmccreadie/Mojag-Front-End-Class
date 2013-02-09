@@ -25,7 +25,7 @@ class mojagCache {
 	//expiration time.
 	var $expiration = 3600;
 
-    function __construct($dir)
+    function __construct()
     {
         $this->dir = $_SERVER['DOCUMENT_ROOT'].'mojagclass/cache';
 		print_r($this->dir);

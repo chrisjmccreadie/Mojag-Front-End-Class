@@ -204,6 +204,30 @@ class mojagClass
 		
 	 }
 	 
+	 
+	 /*stock processing
+	  * 
+	  */
+	  
+	 function getStock($siteid)
+	 {
+		//This function get the objects which match the keywords.
+		
+		$url = "stock/?siteid=$siteid";
+
+		$meta = $this->fetchPage($url);
+		//echo 'meta';
+		//print_r($meta);
+		//echo 'end';
+		return($meta);
+	 }
+	 
+	 /*
+	  * end of stock processing
+	  */
+	 
+	 
+	 
 	 function getKeyword($siteid,$keywords)
 	 {
 		//This function get the objects which match the keywords.
@@ -219,13 +243,47 @@ class mojagClass
 	 
 	 function getArchiveMeta($id,$keywords)
 	 {
-	 	//update function to work with more than one keyword.
 		//	/index.php/rest/rest/archivepages?id=15
-		$url = "archivepages/?id=$id=$keywords";
+		$url = "archivemeta/?id=$id&keywords=$keywords";
+		//echo $url;
+		//exit;
 		$meta = $this->fetchPage($url);
 		return($meta);		
 	 }
 	
+	
+	 function getArchivePages($id,$keywords)
+	 {
+		//	/index.php/rest/rest/archivepages?id=15
+		$url = "archivepages/?id=$id&keywords=$keywords";
+		//echo $url;
+		//exit;
+		$meta = $this->fetchPage($url);
+		return($meta);		
+	 }
+	 
+	 function getArchivePage($id)
+	 {
+		//	/index.php/rest/rest/archivepages?id=15
+		$url = "archivepage/?id=$id";
+		//echo $url;
+		//exit;
+		$meta = $this->fetchPage($url);
+		return($meta);		
+	 }
+
+	 function getArchivePagebyName($name,$siteid)
+	 {
+		//	/index.php/rest/rest/archivepages?id=15
+		//echo $name;
+		$name = urlencode($name);
+		$url = "archivepageoutputname/?id=$siteid&on=$name";
+	//	echo $url;
+		//exit;
+		$meta = $this->fetchPage($url);
+		return($meta);		
+	 }
+	 	 
 	 
 	 
 	 
