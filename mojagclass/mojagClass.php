@@ -373,7 +373,7 @@ class mojagClass
 	
 	
 	//This function get the outname and checks for that
-	function getContentObjectByOutputname($siteid,$counter=1,$outputname='')
+	function getContentObjectByOutputname($siteid,$counter=1,$outputname='',$draft)
 	{
 		//get the output name, it will return the last url part but you can override it.
 		if($outputname == '')
@@ -392,7 +392,12 @@ class mojagClass
 		$data = $this->fetchPage($url);
 		
 		//return the  data
-		$data2 = $data[0]->pagedata;
+		if ($draft == 0)
+			$data2 = $data[0]->draftdata;	
+		else
+			$data2 = $data[0]->pagedata;
+		
+		
 		foreach($data2 as $index=>$val){    
 		foreach($data2[$index] as $key => $value) {
 			$datafin[] = array('key' => $key,'value' =>$value);
