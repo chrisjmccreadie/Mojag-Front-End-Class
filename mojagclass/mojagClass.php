@@ -18,8 +18,8 @@ class mojagClass
 {
 	
 	var $url='';
-	var $useurl='http://www.mojag.co/index.php/rest/rest/';
-	//var $useurl='http://localhost:8888/mojag/index.php/rest/rest/';
+	//var $useurl='http://www.mojag.co/index.php/rest/rest/';
+	var $useurl='http://localhost:8888/mojag/index.php/rest/rest/';
 	
 	
     function __construct() {
@@ -129,17 +129,51 @@ class mojagClass
 	function searchContent($search,$pagecontent,$default='')
 	{
 		//loop through the content
-		foreach ($pagecontent as $data)
+					//print_r($pagecontent);
+					
+		/*
+		 * old function need to test all new functions work with new parser
+		 * 		foreach ($pagecontent as $data)
+		*		{
+		 * 			$dobj = (object) $data;
+		 * 			if (strtolower($dobj->key) == strtolower($search))
+		 *			{
+		*				//return the value.
+		*				return($dobj->value);
+		*			}
+		 * 
+		 * 
+		 * 		}
+		 */ 
+		if (is_array($pagecontent))
 		{
-			//force it to be a object, damn you PHP behave.
-	    	$dobj = (object) $data;
-			//check if this is the object you are looking for
-			if (strtolower($dobj->key) == strtolower($search))
+			//echo 'its array';
+			$pagecontent = (object) $pagecontent;
+			//print_r($pagecontent);
+			foreach ($pagecontent as $k => $v) 
 			{
-				//return the value.
-				return($dobj->value);
-			}
+	   			if (strtolower($k) == strtolower($search))
+			 	{
+					return($v);
+			 	}
+	   		}
 		}
+		else {
+			foreach ($pagecontent as $data)
+			{
+				//print_r($data);
+				foreach ($data as $k => $v) 
+				{
+	   				 if (strtolower($k) == strtolower($search))
+					 {
+					 	return($v);
+					 }
+	   				//echo $v;
+				}
+	
+			}			
+		}
+
 		//return the default
 		return($default);
 	}
@@ -194,6 +228,10 @@ class mojagClass
 	 * END OF GENERIC FUNCTIONS
 	 */
 	 
+	 /*
+	  * START SEO PROCESSSING
+	  */ 
+	 
 	 
 	 function fecthSeo($pageid)
 	 {
@@ -204,7 +242,21 @@ class mojagClass
 		
 	 }
 	 
+	 function processSchema($data,$itemprops)
+	 {
+		 //	print_r($data);
+		//print_r($itemprops);
+		//TODO:make it work with arrays, make it select between divs, spans etc and add item scopes
+		$data = '<span itemprop="'.$itemprops.'" >
+			    '.$data.'Kirkland</span>';
+		return($data);
+	 }
 	 
+
+	 /*
+	  * START SEO PROCESSSING
+	  */ 
+	  	 
 	 /*stock processing
 	  * 
 	  */
