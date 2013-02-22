@@ -9,35 +9,65 @@
  * This class handles all the calls to the Mojag REST API and very nice it is too.
  * 
  * This class is has been coded it be as simple as possible to make it as accessable as possible, please if it is to simplistic for your needs
- * create a super duper mutexed version with all the trimmings, we would love to invclude it,
+ * create a super duper mutexed version with all the trimmings, we would love to include it,
  * 
  */
-                                error_reporting(E_ALL);
+ //error_reporting(E_ALL);
  
 class mojagClass
 {
 	
 	var $url='';
-	//var $useurl='http://www.mojag.co/index.php/rest/rest/';
-	var $useurl='http://localhost:8888/mojag/index.php/rest/rest/';
+	var $useurl='http://www.mojag.co/index.php/rest/rest/';  //the url to use.
+	var $draft = 0;  //hold the draft state
+	var $version = '1';	 // Hold the version of the Mojag Class we may need to update this at some point.
+	
+	//var $useurl='http://localhost:8888/mojag/index.php/rest/rest/';
 	
 	
     function __construct() {
+    	//set the urls that we will cycle through.
 		$this->url[]='http://www.mojag.co/index.php/rest/rest/';
 	 	$this->url[]= 'http://localhost:8888/mojag/index.php/rest/rest/';
 		//$this->workingurl();
+		
+		//check if the content we are going to show is draft or not.
+    	if (isset($_GET['draft']))
+		{
+			$this->draft = 1;
+			//echo 'in draft';
+		}
     }
 	
 	
-	function version()
+	//tell the user the current versiom
+	function getVersion()
 	{
-		echo $this->version;
+		return($this->version);
 	}
 	
-	function update()
+	//connect to the server and get the latest versions
+	function checkVersion()
 	{
 		//check to see which version we are using.
+		echo "Our version :".$this->getVersion();
+		$currentversion = $this->fetchPage('version');
+		echo "<br> Current version".$currentversion;
+		if ($this->version < $currentversion)
+			echo 'Our version of the Mojag Class is out of date, update?';
+		else
+			echo 'Our version of the Mojag Class is  notout of date, huzzah';
 	}
+	
+	 //lite sql processing
+	 function SQL()
+	 {
+	 	$db = new SQLite3('mysqlitedb.db');
+		$db->exec('CREATE TABLE foo (bar STRING)');
+		$db->exec("INSERT INTO foo (bar) VALUES ('This is a test')");
+		$result = $db->query('SELECT bar FROM foo');
+		var_dump($result->fetchArray());
+	 }
 	
 	 function getAttributes($type,$object)
 	 {
@@ -126,6 +156,7 @@ class mojagClass
 		//print_r($data);
 	}
 	
+	/*
 	function searchContent($search,$pagecontent,$default='')
 	{
 		//loop through the content
@@ -145,9 +176,11 @@ class mojagClass
 		 * 
 		 * 		}
 		 */ 
+		/*
+		// print_r($pagecontent);
 		if (is_array($pagecontent))
 		{
-			//echo 'its array';
+			echo 'its array';
 			$pagecontent = (object) $pagecontent;
 			//print_r($pagecontent);
 			foreach ($pagecontent as $k => $v) 
@@ -175,6 +208,24 @@ class mojagClass
 		}
 
 		//return the default
+		return($default);
+	}
+		 * */
+		 
+	function searchContent($search,$pagecontent,$default='')
+	{
+
+				foreach ($pagecontent as $k => $v) 
+				{
+					//print_r($k);
+					//echo $k.' : '.$v.'<br>';
+	   				 if (strtolower($k) == strtolower($search))
+					 {
+					 	return($v);
+					 }
+	   				//echo $v;
+				}
+
 		return($default);
 	}
 	
@@ -425,7 +476,7 @@ class mojagClass
 	
 	
 	//This function get the outname and checks for that
-	function getContentObjectByOutputname($siteid,$counter=1,$outputname='',$draft)
+	function getContentObjectByOutputname($siteid,$counter=1,$outputname='')
 	{
 		//get the output name, it will return the last url part but you can override it.
 		if($outputname == '')
@@ -442,19 +493,8 @@ class mojagClass
 		
 		$url = "pageoutputname?id=$siteid&on=$url3";
 		$data = $this->fetchPage($url);
-		
-		//return the  data
-		if ($draft == 0)
-			$data2 = $data[0]->draftdata;	
-		else
-			$data2 = $data[0]->pagedata;
-		
-		
-		foreach($data2 as $index=>$val){    
-		foreach($data2[$index] as $key => $value) {
-			$datafin[] = array('key' => $key,'value' =>$value);
-			}
-		}
+		$datafin['pagedata'] = $data[0]->pagedata;
+		$datafin['draftdata'] = $data[0]->draftdata;	
 		$datafin['user'] = $data[0]->user;
 		return($datafin);
 	}
