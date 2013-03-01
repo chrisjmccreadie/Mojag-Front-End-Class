@@ -46,6 +46,18 @@ class mojagClass
 		return($this->version);
 	}
 	
+	//store the version used to the stream in the mojag class.
+	function storeversion($siteid)
+	{
+		$url = "storeversion?version=".$this->version.'&siteid='.$siteid;
+		//echo $url;
+		//exit;
+		$v = $this->fetchPage($url);
+		//exit;
+		return($v);
+		
+	}
+	
 	//connect to the server and get the latest versions
 	function checkVersion()
 	{
