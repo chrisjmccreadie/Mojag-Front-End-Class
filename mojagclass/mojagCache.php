@@ -5,7 +5,7 @@
  * Copyright : none, use it and enjoy it.
  * author : Chris McCreadie
  * date added : 05/10/2012
- * date updated : 05/10/2012
+ * date updated : 01/03/2013
  * 
  * This class handles all the caching at an object level.
  * 
@@ -16,127 +16,121 @@
  * 
  * 	http://www.jongales.com/blog/2009/02/18/simple-file-based-php-cache-class/
  * 
+ * TODO: add memcachier support.
+ * 
+ * Memcachier.
+ * 
+ * http://www.memcachier.com/
+ * 
+ * Using memcachier is very convient for many sites that do have write access to their files.  You can store the data in the cloud.
+ * 
  */
 
 class mojagCache {
 	
 	//the live url checker
-	var $checkurls = array("url" =>'http://www.mojag.co/index.php/rest/rest/checkliveserver/');
 	//expiration time.
-	var $expiration = 3600;
-		var $fetchedfrom = 'cache';
-	
-
+	var $expiration = 3600;  // 1 hour
+   
     function __construct()
     {
-        $this->dir = $_SERVER['DOCUMENT_ROOT'].'mojagclass/cache';
-		print_r($this->dir);
-		exit;
-    }
-	
-	private function checkServerLive()
-	{
-		/*
-		 * This function checks that the server is live.  This is an array of server to check which one is alive.
-		 */
-		foreach ($checkurls as $url)
-		{
-			//print_r($url);
-			$opts = array('http'=>array('header' => "User-Agent:MyAgent/1.0\r\n"));
-			$context = stream_context_create($opts);
-			$str = file_get_contents($url,false,$context);
-			if ($str == "true")
-				return($str);
-		}
-		return('false');		
-				//print_r($urls);
-		
+    	//set the cache dir.
+        $this->dir = $_SERVER['DOCUMENT_ROOT'].'/mojagclass/cache';
+		//print_r($this->dir);
+		//exit;    
 	}
+	
 
+	//set the name.
     private function _name($key)
     {
         return sprintf("%s/%s", $this->dir, sha1($key));
     }
 
+	//get the cached object
     public function get($key,$exipre=0)
     {
 
+		//check the dir exists and is writeable.
         if ( !is_dir($this->dir) OR !is_writable($this->dir))
         {
             return FALSE;
         }
-
+		//set the cache path
         $cache_path = $this->_name($key);
-
+		//return false if it does not exist
         if (!@file_exists($cache_path))
         {
             return FALSE;
         }
 		
-		//over the exipre as the server is down, oh noez.
+		//check if we are using an expiry, it defaults to never expire the content
 		if ($exipre == 1)
 		{
-			//echo 'expiring';
+			//the cached file is older than the expiry time
 			 if (filemtime($cache_path) < (time() - $this->expiration))
        		 {
-       		 	
-				$this->$fetchedfrom = 'clear cache';
+       			//clear the cached file
           	  	$this->clear($key);
+				//return to recache
             	return FALSE;
         	}			
 		}
-		else
-		{
-			//echo 'not expiring';
-		}
 
-
+		//open the file.
         if (!$fp = @fopen($cache_path, 'rb'))
         {
             return FALSE;
         }
-
+		//lock it.
         flock($fp, LOCK_SH);
-
+		
         $cache = '';
-
+		//read it
         if (filesize($cache_path) > 0)
         {
             $cache = unserialize(fread($fp, filesize($cache_path)));
         }
         else
         {
-            $cache = NULL;
+        	//the file is blank so we need to recache.
+        	//echo 'in fileszie else';
+			//exit;
+            $cache = FALSE;
         }
-
+		//unclock it.
         flock($fp, LOCK_UN);
         fclose($fp);
 
         return $cache;
     }
 
-  	//set the cache object
+	//set the cache object
     public function set($key, $data)
     {
-    	//only overwrite it if we have some data.  In the future we could check this against a list of execpted elements to 
-    	//further future proof it.
-		if (!empty($data))
-		{
-	        if ( !is_dir($this->dir) OR !is_writable($this->dir))
+    		//check we can write the data
+ 	   		if ( !is_dir($this->dir) OR !is_writable($this->dir))
 	        {
 	            return FALSE;
 	        }
-	
+			//set the cache path
 	        $cache_path = $this->_name($key);
-	
+			//open it
 	        if ( ! $fp = fopen($cache_path, 'wb'))
 	        {
 	            return FALSE;
 	        }
-	
+			//lock it
 	        if (flock($fp, LOCK_EX))
 	        {
+	        	//set a cahce time and add it to the object, we could use file time it was created as well.
+	        	$data->mojagcachetime = time();	
+		       // $data['mojagcached] = time();	
+	        	//print_r($data);
+				//exit;
+				//save the file
 	            fwrite($fp, serialize($data));
+				//rekease it.
 	            flock($fp, LOCK_UN);
 	        }
 	        else
@@ -145,12 +139,11 @@ class mojagCache {
 	        }
 	        fclose($fp);
 	        @chmod($cache_path, 0777);
-	        return 1;
-		}
-		else
-			return 0;
+	        return true;
+	
     }
 
+	//clear the cache.
     public function clear($key)
     {
         $cache_path = $this->_name($key);
