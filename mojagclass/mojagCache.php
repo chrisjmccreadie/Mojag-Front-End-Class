@@ -24,6 +24,8 @@ class mojagCache {
 	var $checkurls = array("url" =>'http://www.mojag.co/index.php/rest/rest/checkliveserver/');
 	//expiration time.
 	var $expiration = 3600;
+		var $fetchedfrom = 'cache';
+	
 
     function __construct()
     {
@@ -56,7 +58,7 @@ class mojagCache {
         return sprintf("%s/%s", $this->dir, sha1($key));
     }
 
-    public function get($key,$exipre=1)
+    public function get($key,$exipre=0)
     {
 
         if ( !is_dir($this->dir) OR !is_writable($this->dir))
@@ -77,6 +79,8 @@ class mojagCache {
 			//echo 'expiring';
 			 if (filemtime($cache_path) < (time() - $this->expiration))
        		 {
+       		 	
+				$this->$fetchedfrom = 'clear cache';
           	  	$this->clear($key);
             	return FALSE;
         	}			
@@ -111,33 +115,40 @@ class mojagCache {
         return $cache;
     }
 
+  	//set the cache object
     public function set($key, $data)
     {
-
-        if ( !is_dir($this->dir) OR !is_writable($this->dir))
-        {
-            return FALSE;
-        }
-
-        $cache_path = $this->_name($key);
-
-        if ( ! $fp = fopen($cache_path, 'wb'))
-        {
-            return FALSE;
-        }
-
-        if (flock($fp, LOCK_EX))
-        {
-            fwrite($fp, serialize($data));
-            flock($fp, LOCK_UN);
-        }
-        else
-        {
-            return FALSE;
-        }
-        fclose($fp);
-        @chmod($cache_path, 0777);
-        return TRUE;
+    	//only overwrite it if we have some data.  In the future we could check this against a list of execpted elements to 
+    	//further future proof it.
+		if (!empty($data))
+		{
+	        if ( !is_dir($this->dir) OR !is_writable($this->dir))
+	        {
+	            return FALSE;
+	        }
+	
+	        $cache_path = $this->_name($key);
+	
+	        if ( ! $fp = fopen($cache_path, 'wb'))
+	        {
+	            return FALSE;
+	        }
+	
+	        if (flock($fp, LOCK_EX))
+	        {
+	            fwrite($fp, serialize($data));
+	            flock($fp, LOCK_UN);
+	        }
+	        else
+	        {
+	            return FALSE;
+	        }
+	        fclose($fp);
+	        @chmod($cache_path, 0777);
+	        return 1;
+		}
+		else
+			return 0;
     }
 
     public function clear($key)
