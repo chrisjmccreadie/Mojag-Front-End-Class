@@ -294,6 +294,39 @@ class mojagClass
 	 /*
 	  * START SEO PROCESSSING
 	  */ 
+	  
+	  /*
+	  * This function sets the page and site seo, basically it builds the SEO data intellegently depending on what information 
+	  * has been filled in in the CMS>
+	  * 
+	  */
+	 function setSeo($site,$pageseo)
+	 {
+	 	//set the title fromt the site name
+	 	$seo->title = $site->name;
+		//checl if we have a seo description if now just us the basic description
+		if ($site->seodesc == '')
+			$seo->description = $site->desc;
+		else {
+			$seo->description = $site->seodesc;
+		}
+		//set the keywords, old school styleeeee.
+		$seo->keywords = $site->seokeywords;
+		
+		//check if we have page seo for this page to over ride the site stuff.
+		if (is_array($pageseo))
+		{
+			if ($pageseo->title != '')
+				$seo->title = $pageseo->title;		
+			if ($pageseo->desc != '')
+				$seo->description = $pageseo->description;	
+			if ($pageseo->keywords != '')
+				$seo->keywords = $pageseo->keywords;			
+		}
+		return($seo);
+
+		//print_r($pageseo);
+	 }
 	 
 	 
 	 function fecthSeo($pageid)
@@ -533,7 +566,7 @@ class mojagClass
 		//echo 'meta';
 		//print_r($meta);
 		//echo 'end';
-		if ($site != 0)
+		if (!empty($site))
 		{
 			return($site);
 		}
