@@ -27,8 +27,9 @@ class mojagClass
 	
     function __construct() {
     	//set the urls that we will cycle through.
-		$this->url[]='http://www.mojag.co/index.php/rest/rest/';
-	 	$this->url[]= 'http://localhost:8888/mojag/index.php/rest/rest/';
+		$str = file_get_contents('cache/server.txt');
+		if ($str == '')
+			$str = 'http://www.mojag.co/index.php/rest/rest/';
 		//$this->workingurl();
 		
 		//check if the content we are going to show is draft or not.

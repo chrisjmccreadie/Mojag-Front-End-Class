@@ -53,9 +53,16 @@ class mojagCache {
     public function get($key,$exipre=0)
     {
 
-		//check the dir exists and is writeable.
-        if ( !is_dir($this->dir) OR !is_writable($this->dir))
+      	//check the dir exists and is writeable.
+        if ( !is_dir($this->dir) )
         {
+        	//echo "not dir:".$this->dir.'<br/>';
+            return FALSE;
+        }
+		
+		if ( !is_writable($this->dir) )
+        {
+        	//echo "not writeable:".$this->dir.'<br/>';
             return FALSE;
         }
 		//set the cache path
