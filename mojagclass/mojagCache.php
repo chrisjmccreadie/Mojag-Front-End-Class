@@ -30,7 +30,7 @@ class mojagCache {
 	
 	//the live url checker
 	var $checkurls = array("url" =>'http://www.mojag.co/index.php/rest/rest/checkliveserver/');
-	
+	var $dir = 'd';
 	//expiration time.
 	var $expiration = 3600;  // 1 hour
    

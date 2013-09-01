@@ -14,18 +14,24 @@
  */
  //error_reporting(E_ALL);
  
-class mojagClass
+ 
+include('mojagCache.php');
+
+ 
+class mojagClass extends mojagCache
 {
 	
 	var $url='';
 	var $useurl='http://www.mojag.co/index.php/rest/rest/';  //the url to use.
 	var $draft = 0;  //hold the draft state
 	var $version = '1';	 // Hold the version of the Mojag Class we may need to update this at some point.
-	
+	var $cacheit = 1; //set if you want to use intellgent caching.
+	var $debug = 1; //set the debug var
 	//var $useurl='http://localhost:8888/mojag/index.php/rest/rest/';
 	
 	
     function __construct() {
+    	
     	//set the urls that we will cycle through.
 		$str = file_get_contents('cache/server.txt');
 		if ($str == '')
@@ -37,6 +43,16 @@ class mojagClass
 		{
 			$this->draft = 1;
 			//echo 'in draft';
+		}
+		//constructor will not be fired in mojagcache so we need to set it here.
+		if ($cacheit = 1)
+		{
+			$this->dir =  $_SERVER['DOCUMENT_ROOT'].'/mojagclass/cache';
+		}
+		
+		if (isset($_GET['debug']))
+		{
+			$this->debug=1;
 		}
     }
 	
@@ -151,18 +167,104 @@ class mojagClass
 	 		$opts = array('http'=>array('header' => "User-Agent:MyAgent/1.0\r\n"));
 		
 		//define the page to call here
+		$cacheurl = $url;
+		if ($this->debug == 1)
+		{
+			echo "Cache Name:$cacheurl<br/>";
+		}
 		$url = $this->useurl.$url;
-		//debug information
-		//echo $url.'</br>';
-		//exit;
-		//get the contents, this would be better in CURL but its not on 100% of all servers.
-		
-		$context = stream_context_create($opts);
-		$str = file_get_contents($url,false,$context);
-	//	echo "str".$str;
-		//exit;
-		//decode the json
-		$data = json_decode($str);
+		if ($this->debug == 1)
+		{
+			echo "REST Call:$url<br/>";
+		}
+		//echo $url;
+		//check the cache
+		if ($this->cacheit == 1)
+		{
+			if ($this->debug == 1)
+			{
+				echo "Using Smart Cache<br/>";
+			}			
+			//echo 'cache';
+			//echo $cacheurl;
+			$cachedata = $this->get($cacheurl);
+			if ($this->debug == 1)
+			{
+				//echo "Data from Cache<br/>";
+				///print_r($cachedata);
+				//echo "End data from Cache<br/>";
+			}
+			//print_r($this->dir);
+			//exit; 
+			//print_r($cachedata);
+			//exit;
+			//check if its draft or reacache or blank
+			if ((isset($_GET['recache'])) || (isset($_GET['draft'])) || ($cachedata === false))
+			{
+				if ($this->debug == 1)
+				{
+					echo "Data not cached<br/>";
+					if (isset($_GET['recache']))
+						echo "Recache state:Yes<br/>";
+					else {
+						echo "Recache state:No<br/>";
+						
+					}
+					if (isset($_GET['draft']))
+						echo "Draft state:Yes<br/>";
+					else {
+						echo "Recache state:No<br/>";
+						
+					}
+
+				}
+				$context = stream_context_create($opts);
+				$str = file_get_contents($url,false,$context);
+				if ($this->debug == 1)
+				{
+					//echo "Data REST Call<br/>";
+					//print_r($str);
+					//echo "End data from Cache<br/>";						
+				}
+				//echo $url;
+				//echo "str".$str;
+				//exit;
+				////decode the json
+				$data = json_decode($str);	
+				$this->set($cacheurl, $data);  
+				if ($this->debug == 1)
+				{
+					echo 'not server from cache';
+				}				
+			} 
+			else
+			{
+				$data = $cachedata;
+				if ($this->debug == 1)
+				{
+					echo 'served from cache';
+				}
+			}
+			//print_r($cachedata);
+			
+		}
+		else
+		{
+			//we are not using caching so just get the page as normal
+			//debug information
+			//echo $url.'</br>';
+			//exit;
+			//get the contents, this would be better in CURL but its not on 100% of all servers.
+			
+			$context = stream_context_create($opts);
+			$str = file_get_contents($url,false,$context);
+		//	echo "str".$str;
+			//exit;
+			//decode the json
+			//print_r($data);
+			$data = json_decode($str);			
+		}
+
 		//print_r($data);
 		//exit;
 		return($data);
